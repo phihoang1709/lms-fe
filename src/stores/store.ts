@@ -5,6 +5,8 @@ import { authApi } from '@/services/auth';
 import authReducer ,{ namespace as authNamespace } from './auth/authSlice';
 import themeReducer, { namespace as themeNamespace } from './theme/themeSlice';
 
+import { conversationsApi } from '@/services/conversations';
+
 export const listenerMiddleware = createListenerMiddleware({
   onError: () => console.error('An error listener middleware occurred'),
 });
@@ -13,7 +15,8 @@ export const listenerMiddleware = createListenerMiddleware({
 const reducer = {
   [authNamespace]: authReducer,
   [themeNamespace]: themeReducer,
-  
+
+  [conversationsApi.reducerPath]: conversationsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
 
 };
@@ -24,7 +27,7 @@ export const store = configureStore({
     getDefaultMiddleware()
     .concat(
       authApi.middleware,
-
+      conversationsApi.middleware,
     )
     .prepend(listenerMiddleware.middleware)
 });

@@ -50,7 +50,7 @@ export function ModeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex items-center gap-2 p-3 my-1 rounded-full dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 dark:border-gray-600 focus:outline-none focus:ring-2 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 bg-gray-50 hover:bg-gray-300 text-gray-900 border-gray-400 focus:ring-gray-300 focus:ring-offset-gray-100"
+          className="flex items-center gap-2 p-2.5 my-1 rounded-full dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 dark:border-gray-600 focus:outline-none focus:ring-2 dark:focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 bg-gray-50 hover:bg-gray-300 text-gray-900 border-gray-400 focus:ring-gray-300 focus:ring-offset-gray-100"
         >
           <span className="flex items-center justify-center w-4 h-4">
             {theme === "system" && (<Laptop />)}
