@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { 
@@ -290,78 +290,85 @@ const TaskCard = ({
 
 // Column Component with Drop functionality
 const TaskColumn = ({ 
-  column, 
-  tasks, 
-  onAddTask, 
-  onEditTask, 
-  onDeleteTask, 
-  onDropTask, 
-  getPriorityColor 
-}: { 
-  column: Column; 
-  tasks: Task[]; 
-  onAddTask: (status: any) => void; 
-  onEditTask: (id: string) => void; 
-  onDeleteTask: (id: string) => void; 
-  onDropTask: (taskId: string, sourceColumnId: string, targetColumnId: string) => void;
-  getPriorityColor: (priority: string) => string; 
-}) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: ItemTypes.TASK,
-    drop: (item: { id: string; sourceColumnId: string }) => {
-      onDropTask(item.id, item.sourceColumnId, column.id);
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-
-  return (
-    <div key={column.id} className="flex flex-col h-full">
-      <div className="flex justify-between items-center mb-2 px-2">
-        <h3 className="font-medium text-gray-700 dark:text-gray-300 flex items-center">
-          {column.title}
-          <Badge variant="outline" className="ml-2 bg-gray-100 dark:bg-gray-800">
-            {column.taskIds.length}
-          </Badge>
-        </h3>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-8 w-8 p-0" 
-          onClick={() => onAddTask(column.id)}
+    column, 
+    tasks, 
+    onAddTask, 
+    onEditTask, 
+    onDeleteTask, 
+    onDropTask, 
+    getPriorityColor 
+  }: { 
+    column: Column; 
+    tasks: Task[]; 
+    onAddTask: (status: any) => void; 
+    onEditTask: (id: string) => void; 
+    onDeleteTask: (id: string) => void; 
+    onDropTask: (taskId: string, sourceColumnId: string, targetColumnId: string) => void;
+    getPriorityColor: (priority: string) => string; 
+  }) => {
+    // Create a ref for the div
+    const divRef = useRef<HTMLDivElement>(null);
+  
+    // Set up the useDrop hook
+    const [{ isOver }, drop] = useDrop({
+      accept: ItemTypes.TASK,
+      drop: (item: { id: string; sourceColumnId: string }) => {
+        onDropTask(item.id, item.sourceColumnId, column.id);
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    });
+  
+    // Connect the ref to the drop function
+    drop(divRef);
+  
+    return (
+      <div key={column.id} className="flex flex-col h-full">
+        <div className="flex justify-between items-center mb-2 px-2">
+          <h3 className="font-medium text-gray-700 dark:text-gray-300 flex items-center">
+            {column.title}
+            <Badge variant="outline" className="ml-2 bg-gray-100 dark:bg-gray-800">
+              {column.taskIds.length}
+            </Badge>
+          </h3>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0" 
+            onClick={() => onAddTask(column.id)}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+  
+        <div
+          ref={divRef}
+          className={`flex-1 p-2 rounded-lg overflow-y-auto ${
+            isOver 
+              ? 'bg-gray-100 dark:bg-gray-800/50' 
+              : 'bg-gray-50 dark:bg-gray-800/20'
+          }`}
         >
-          <Plus className="h-4 w-4" />
-        </Button>
+          {tasks.map((task, index) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              index={index}
+              onEdit={onEditTask}
+              onDelete={onDeleteTask}
+              getPriorityColor={getPriorityColor}
+            />
+          ))}
+          {tasks.length === 0 && (
+            <div className="text-center py-4 text-sm text-gray-400 dark:text-gray-500">
+              No tasks yet
+            </div>
+          )}
+        </div>
       </div>
-
-      <div
-        ref={drop}
-        className={`flex-1 p-2 rounded-lg overflow-y-auto ${
-          isOver 
-            ? 'bg-gray-100 dark:bg-gray-800/50' 
-            : 'bg-gray-50 dark:bg-gray-800/20'
-        }`}
-      >
-        {tasks.map((task, index) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            index={index}
-            onEdit={onEditTask}
-            onDelete={onDeleteTask}
-            getPriorityColor={getPriorityColor}
-          />
-        ))}
-        {tasks.length === 0 && (
-          <div className="text-center py-4 text-sm text-gray-400 dark:text-gray-500">
-            No tasks yet
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+    );
+  };
 
 const Tasks = () => {
   const [tasks, setTasks] = useState<Record<string, Task>>(initialTasks);
