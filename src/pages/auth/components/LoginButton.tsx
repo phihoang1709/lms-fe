@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import routes from '@/constants/routes';
+import { routesPaths } from '@/constants/routes';
 import { LoginSocialActionTypeEnum, SocialTypeEnum } from '@/enums/social-type.enum';
 import { FaXTwitter } from 'react-icons/fa6';
 import { baseUrl } from '@/configs/config';
@@ -19,7 +19,7 @@ const LoginButton = () => {
         const ref = searchParams.get("ref");
 
         const params = new URLSearchParams({
-            state: `${appUrl}${routes.AUTH_CALLBACK}`,
+            state: `${appUrl}${routesPaths.AUTH_CALLBACK}`,
             ...(ref ? { ref } : {}),
             action: LoginSocialActionTypeEnum.Login,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone

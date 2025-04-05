@@ -1,4 +1,4 @@
-import routes from "@/constants/routes";
+import { routesPaths } from "@/constants/routes";
 import { LoginSocialActionTypeEnum } from "@/enums/social-type.enum";
 import { useAuthToken } from "@/hooks/useAuthToken";
 import { useEffect, useState } from "react";
@@ -25,11 +25,11 @@ const AuthCallback = () => {
           setToken(token);
           setIsSuccess(true);
           setMessage("Login succeeded!");
-          navigate(routes.ROOT);
+          navigate(routesPaths.ROOT);
         } else {
           setIsSuccess(false);
           setMessage(errorMessage || "Login failed!");
-          navigate(routes.AUTH);
+          navigate(routesPaths.AUTH);
         }
       }
 
@@ -41,14 +41,14 @@ const AuthCallback = () => {
           setIsSuccess(false);
           setMessage(errorMessage || "Sync social failed!");
         }
-        navigate(routes.PROFILE);
+        navigate(routesPaths.PROFILE);
       }
     };
 
     if (action) {
       handleLoginOrSync(action);
     } else {
-      navigate(routes.AUTH);
+      navigate(routesPaths.AUTH);
     }
   }, [location, navigate, setToken]);
 
