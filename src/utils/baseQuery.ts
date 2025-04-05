@@ -14,7 +14,8 @@ export const baseQueryWithReauth = (
       // const token = (getState() as RootState).auth.token;
       const token = localStorage.getItem('auth-token');
       if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+        const cleanToken = token.replace(/^"|"$/g, '');
+        headers.set("Authorization", `Bearer ${cleanToken}`);
       }
       return headers;
     },

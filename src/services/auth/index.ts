@@ -1,26 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
+import { LoginRequest, RegisterRequest, RegisterResponse, UserResponse } from "@/interfaces/auth";
 
 const reducerPath = "authApi";
 const endpoint = 'auth';
-
-export interface User {
-  first_name: string;
-  last_name: string;
-}
-
-export interface UserResponse {
-  user: User;
-  token: string;
-}
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-// Custom hook for managing auth token
 
 
 export const authApi = createApi({
@@ -32,7 +16,8 @@ export const authApi = createApi({
       if (endpoint === "getMe") {
         const storedToken = localStorage.getItem('auth-token');
         if (storedToken) {
-          headers.set("Authorization", `Bearer ${storedToken}`);
+          const cleanToken = storedToken.replace(/^"|"$/g, '');
+          headers.set("Authorization", `Bearer ${cleanToken}`);
         }
       }
       return headers;
@@ -54,6 +39,13 @@ export const authApi = createApi({
         }
       },
     }),
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
+      query: (body) => ({
+        url: `${endpoint}/register`,
+        method: "POST",
+        body,
+      }),
+    }),
     logout: builder.mutation<void, void>({
       queryFn: () => {
         localStorage.removeItem("auth-token");
@@ -67,12 +59,8 @@ export const authApi = createApi({
       }),
       providesTags: [InvalidatesTagsEnum.AUTH],
     }),
-    checkMe: builder.query({
-      query: () => ({
-        url: `${endpoint}/me`,
-      }),
-    }),
+    
   }),
 });
 
-export const { useCheckMeQuery, useLoginMutation, useLogoutMutation, useGetMeQuery } = authApi;
+export const { useLoginMutation, useLogoutMutation, useGetMeQuery, useLazyGetMeQuery } = authApi;
